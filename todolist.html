@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./output.css">
+    <script defer src="https://kit.fontawesome.com/bf2c5f39e9.js" crossorigin="anonymous"></script>
+    <title>To Do list</title>
+</head>
+
+<body class="p-2 w-screeen flex flex-col items-center bg-amber-500">
+    <div id="alertModal" class="fixed right-4 top-4"></div>
+    <div class="mb-4">
+        <div class="p-4 bg-red-400 h-fit rounded-lg">
+            <h1 class="text-white text-center text-2xl p-4">To Do List</h1>
+            <form id="addNoteForm" class="inputgroup flex p-4 focus:outline-blue-500">
+                <input type="text" placeholder="Title" id="inputTitle" class="p-2 bg-gray-200 w-96 outline-none">
+                <button type="submit" id="addBtn" class="p-2 px-8 bg-gray-200 hover:bg-gray-300"><i class="fa fa-add"></i> Add</button>
+            </form>
+            <form id="editNoteForm" class="inputgroup flex p-4 focus:outline-blue-500 hidden">
+                <input type="text" placeholder="New title" id="editedTitle" class="p-2 pl-6 w-96 outline-none">
+                <button type="submit" id="editBtn" class="p-2 px-8 bg-gray-200 hover:bg-gray-300">Edit</button>
+            </form>
+        </div>
+
+        <div id="notes" class="py-4 h-auto"></div>
+
+    </div>
+
+</body>
+<script>
+    const notesList = [];
+
+    function showAlert(message,type) {
+        let alertModal = document.getElementById("alertModal");
+        alertModal.innerHTML += `<div class="${(type === 'success')? 'bg-green-300': 'bg-red-500'} mb-1 w-full p-1 px-4 rounded-lg border-b-4 border-b-black transition-all ease-in-out duration-500">${message}</div>`;
+        setTimeout(()=>{
+            alertModal.lastElementChild.style.width = 0;
+            alertModal.lastElementChild.remove();
+        }, 3000);
+    }
+
+    // Adding message if there is not any note
+    function zeroNotesCheck() {
+        let notes = document.getElementById("notes");
+        let message = "Empty To Do, Add Task";  
+        if(notes.childElementCount < 1){
+            notes.innerHTML = `<div id="noNotesMessage" class="w-full text-center bg-white rounded-md p-2">${message}</div>`;
+        }
+    }
+
+    // Adding event listenter for deleting Elements
+    function deleteNote(element) {
+        element.parentElement.parentElement.remove();
+        zeroNotesCheck();
+    }
+
+    zeroNotesCheck();
+
+    // Adding Note in the list
+    let inputTitle = document.getElementById("inputTitle");
+    const addNoteForm = document.getElementById("addNoteForm");
+    const addBtn = document.getElementById("addBtn");
+    const notes = document.getElementById("notes");
+
+    addNoteForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        if (inputTitle.value.length == 0){
+            showAlert("Title must not be empty","error");
+            return;
+        }
+        if(document.getElementById("noNotesMessage") != undefined) notes.innerHTML = '';
+        notes.innerHTML = `            
+            <div class="mb-2 rounded-lg overflow-hidden">
+                <div class="group flex bg-slate-100 w-full">
+                    <div onclick="titleOnClick(this)" class="p-2 w-full group-hover:bg-gray-300">
+                        <input type="checkbox" id="title" class="title hidden checked:">
+                        <label for="title" class="p-2">${inputTitle.value}</label>
+                    </div>
+                    <div onclick="editNote(this)" class="edit p-2 cursor-pointer group-hover:bg-green-300 group-hover:text-white hover:text-white"><i class="fa fa-pencil"></i></div>
+                    <div onclick="deleteNote(this)" class="close p-2 rounded-r-md cursor-pointer group-hover:bg-red-500 group-hover:text-white hover:text-white"><i class="fa fa-trash"></i></div>
+                </div>
+            </div>` + notes.innerHTML;
+        inputTitle.value = '';
+        // notesList.push(inputTitle.value);
+    });
+
+    // Editing the notes
+    const editNoteForm = document.getElementById("editNoteForm");
+    const editedTitle = document.getElementById("editedTitle");
+    const editBtn = document.getElementById("editBtn");
+
+    // Edting notes title
+    function editNote(element) {
+        let addNoteForm = document.getElementById("addNoteForm");
+        let editNoteForm = document.getElementById("editNoteForm");
+
+        addNoteForm.classList.toggle('hidden');
+        editNoteForm.classList.toggle('hidden');
+
+        let title = element.previousElementSibling.getElementsByTagName("label")[0].innerHTML;
+        let editedTitle = document.getElementById("editedTitle");
+        editedTitle.value = title;
+        element.parentElement.parentElement.remove();
+    }
+
+    editNoteForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (editedTitle.value.length == 0){
+            showAlert("Title must not be empty","error");
+            return;
+        }
+        notes.innerHTML = `            
+        <div class="mb-2 rounded-lg overflow-hidden">
+                <div class="group/title flex bg-slate-100 w-full">
+                    <div onclick="titleOnClick(this)" class="p-2 w-full group/title-hover:bg-gray-300">
+                        <input type="checkbox" id="title" class="title hidden">
+                        <label for="title" class="p-2">${editedTitle.value}</label>
+                    </div>
+                    <div onclick="editNote(this)" class="edit p-2 cursor-pointer group/title-hover:bg-green-300 group/title-hover:text-white hover:text-white"><i class="fa fa-pencil"></i></div>
+                    <div onclick="deleteNote(this)" class="close p-2 rounded-r-md cursor-pointer group/title-hover:bg-red-500 group/title-hover:text-white hover:text-white"><i class="fa fa-trash"></i></div>
+                </div>
+            </div>` + notes.innerHTML;
+        editedTitle.value = '';
+        addNoteForm.classList.toggle('hidden');
+        editNoteForm.classList.toggle('hidden');
+    });
+
+    // Strikethrough when clicked on the title
+    function titleOnClick(element) {
+        element.getElementsByTagName("label")[0].classList.toggle('line-through');
+    }
+</script>
+
+</html>

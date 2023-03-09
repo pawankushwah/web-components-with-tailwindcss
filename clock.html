@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./output.css">
+    <title>Analog Clock</title>
+</head>
+<body class="flex justify-center items-center h-screen bg-gray-300 relative shadow-2xl shadow-gray-800">
+    <div class="bg-[url('./images/clock.png')] bg-cover rounded-full w-96 h-96 border-blue-500 border-8 flex justify-center items-center">
+
+        <div id="hourHand" class="rounded-lg absolute top-1/2 left-1/2 origin-bottom -translate-x-1/2 -translate-y-[calc(100%)] w-3 h-28 bg-green-800"></div>
+        <div id="minHand" class="rounded-lg absolute top-1/2 left-1/2 origin-bottom -translate-x-1/2 -translate-y-[calc(100%)] w-2 h-32 bg-orange-300"></div>
+        <div id="secHand" class="rounded-lg absolute top-1/2 left-1/2 origin-bottom -translate-x-1/2 -translate-y-[calc(80%)] w-1 h-40 bg-red-500"></div>
+        <div id="pin" class="absolute rounded-full top-[calc(50% - 1px)] left-[calc(50% - 1px)] w-5 h-5 bg-gray-500"></div>
+
+    </div>
+</body>
+<script>
+    const hourhand = document.getElementById("hourHand");
+    const minhand = document.getElementById("minHand");
+    const sechand = document.getElementById("secHand");
+    const pin = document.getElementById("pin");
+
+    setInterval(() => {
+        let date = new Date();
+        let hour = date.getHours();
+        let min = date.getMinutes();
+        let sec = date.getSeconds();
+
+        let hourRotation = (hour * 30) + (min * 0.5) + (sec * 0.00834);
+        let minRotation = (min * 6) + (sec * 0.1);
+        let secRotation = (sec * 6);
+
+        hourhand.style.transform = `translate(-50%, -100%) rotate(${hourRotation}deg)`;
+        minhand.style.transform = `translate(-50%, -100%) rotate(${minRotation}deg)`;
+        sechand.style.transform = `translate(-50%, -100%) rotate(${secRotation}deg)`;
+    }, 1000);
+</script>
+</html>

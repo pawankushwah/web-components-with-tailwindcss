@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Drag and Drop API</title>
+    <link rel="stylesheet" href="./output.css">
+</head>
+<body>
+    <div id="div1" class="w-40 h-20 border-2 border-black" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+    <img id="drag1" src="./images/football.png" alt="Football" width="50" height="50" draggable="true" ondragstart="drag(event)">
+    <div id="div2" class="w-40 h-20 border-2 border-black" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+</body>
+<script>
+    function drag(event) {
+        event.dataTransfer.setData("Text1",event.target.id);
+    }
+
+    function drop(event) {
+        event.preventDefault();
+        let data = event.dataTransfer.getData("Text1");
+        event.target.append(image);
+    }
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+</script>
+</html>

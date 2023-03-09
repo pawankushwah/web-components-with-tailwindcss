@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop API | dataTransfer Interface</title>
+</head>
+
+<body>
+    <div id="ele" draggable="true">This is the draggable element</div>
+    <br>
+    <label for="input1">Takes Plain Text on drop</label>
+    <input type="text" id="input1">
+    <br>
+    <label for="input2">Takes Plain URL on drop</label>
+    <input type="text" id="input2">
+    <br>
+    <label for="input3">Takes Plain miscellenious text on drop</label>
+    <input type="text" id="input3">
+    <br>
+    <label for="input4">Takes files name</label>
+    <textarea id="input4" rows="5" cols="20"></textarea>
+
+    <div>image for showing when we drag the draggable element</div>
+    <img id="dragimage" src="images/football.png" alt="Football" widht="40" height="40">
+</body>
+<script>
+    /* Notes for Drag and Drop API */
+    // datatransfer Interface function
+    // setData(), getData(), clearData()
+    // const dt = event.dataTransfer;
+    // dt.setData("application/x.bookmark", bookmarkString);
+    // dt.setData("text/uri-list", "https://www.mozilla.org");
+    // dt.setData("text/plain", "https://www.mozilla.org");
+
+    // event.dataTransfer.clearData("text/uri-list");
+    // event.dataTransfer.setDragImage(image, xOffset, yOffset);
+
+    // drag effects - copy, move, link, copyMove, copyLink, linkMove, all (default)
+    // the Shift and Control keys would be used to switch between copying, moving, and linking.
+    // event.dataTransfer.effectAllowed = "copy";
+
+    const ele = document.getElementById("ele");
+    const input1 = document.getElementById("input1");
+    const input2 = document.getElementById("input2");
+    const input3 = document.getElementById("input3");
+    const input4 = document.getElementById("input4");
+    const dragimage = document.getElementById("dragimage");
+
+    ele.addEventListener("dragstart", (event) => {
+        // event.preventDefault();
+        event.dataTransfer.setData("text/plain", "Text data");
+        event.dataTransfer.setData("text/uri-list", "http://URL Data");
+        event.dataTransfer.setData("application/misc", "Misc data");
+        // event.dataTransfer.effectAllowed("all");
+        event.dataTransfer.setDragImage(dragimage, 25, 25);
+    });
+
+    // setting the style for drag and drop
+    let inputs = document.getElementsByTagName("input");
+    for (input of inputs) {
+        input.addEventListener("dragenter", (event) => {
+            event.target.style.border = '2px dashed skyblue';
+        });
+        input.addEventListener("dragleave", (event) => {
+            event.target.style.border = '1px solid black';
+        });
+        input.addEventListener("dragend", (event) => {
+            event.target.style.border = '1px solid black';
+        });
+    }
+
+    input1.addEventListener("drop", (event) => {
+        event.preventDefault();
+        let data = event.dataTransfer.getData("text/plain");
+        let istext = event.dataTransfer.types.includes("text/plain");
+        if (istext) {
+            event.target.value = data;
+        }
+    });
+
+    input2.addEventListener("drop", (event) => {
+        event.preventDefault();
+        let data = event.dataTransfer.getData("text/uri-list");
+        let isurl = event.dataTransfer.types.includes("text/uri-list");
+        if (isurl) {
+            event.target.value = data;
+        }
+    });
+
+    input3.addEventListener("drop", (event) => {
+        event.preventDefault();
+        let data = event.dataTransfer.getData("application/misc");
+        let ismisc = event.dataTransfer.types.includes("application/misc");
+        if (ismisc) {
+            event.target.value = data;
+        }
+    });
+
+    input4.addEventListener("drop", (event) => {
+        event.preventDefault();
+        for (data of (event.dataTransfer.files)) {
+            event.target.value += data.name.concat('\n');
+            event.target.value += data.type.concat('\n');
+            event.target.value += Math.round(((data.size / 1024))) + ' KB\n';
+            event.target.value += Math.round(((data.size / 1024) / 1024)) + ' MB\n';
+            let d = new Date(data.lastModifiedDate);
+            event.target.value += `${d.getDate()}/${d.getMonth()}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} \n`;
+            event.target.value += '\n';
+            console.log(data);
+        }
+    });
+
+</script>
+
+</html>

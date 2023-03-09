@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="output.css">
+    <title>HTML DRAG AND DROP API</title>
+</head>
+
+<body>
+    <div class="flex space-x-4 p-4">
+        <div class="boxes w-28 h-40 border-2 border-blue-400">
+            <img id="image" src="./images/football.png" alt="football" class="p-2" draggable="true">
+        </div>
+        <div class="boxes w-28 h-40 border-2 border-blue-400"></div>
+        <div class="boxes w-28 h-40 border-2 border-blue-400"></div>
+        <div class="boxes w-28 h-40 border-2 border-blue-400"></div>
+    </div>
+
+</body>
+<script>
+    console.log("Drag and Drop API Tutorial");
+    const image = document.getElementById("image");
+    const boxes = document.getElementsByClassName("boxes");
+
+    image.addEventListener("dragstart", (ev) => {
+        console.log("Drag Start Event Triggered");
+        // ev.preventDefault();
+        ev.dataTransfer.setData("Text", ev.target.id);
+        ev.target.classList.add("border-2");
+        ev.target.classList.add("border-green-400");
+        setTimeout(() => {
+            ev.target.classList.add("hidden");
+        }, 0);
+    });
+
+    image.addEventListener("dragend", (ev) => {
+        console.log("Drag end Event Triggered");
+        ev.preventDefault();
+        ev.target.classList.remove("border-2");
+        ev.target.classList.remove("border-green-400");
+        ev.target.classList.remove("hidden");
+    });
+
+    // image.addEventListener("drag", ()=>{
+    //     console.log("Drag Event Triggered");
+    // });
+
+    for (box of boxes) {
+        box.addEventListener("dragover", (ev) => {
+            console.log("Dragover event is being Triggered");
+            ev.preventDefault();
+        });
+
+        box.addEventListener("dragenter", (ev) => {
+            console.log("Dragenter event is being Triggered");
+            ev.preventDefault();
+            ev.target.classList.add('border-dashed');
+            ev.target.classList.add('border-purple-400');
+        });
+
+        box.addEventListener("dragleave", (ev) => {
+            console.log("Dragleave event is being Triggered");
+            ev.preventDefault();
+            ev.target.classList.remove('border-dashed');
+            ev.target.classList.remove('border-purple-400');
+        });
+
+        box.addEventListener("drop", (e) => {
+            console.log("Drop event is being Triggered");
+            // e.preventDefault();
+            // let data = e.dataTransfer.getData("Text");
+            // e.target.appendChild(document.getElementById(data));
+            e.target.append(image);
+        });
+    }
+
+</script>
+
+</html>
